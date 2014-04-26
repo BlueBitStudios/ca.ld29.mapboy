@@ -34,4 +34,12 @@ public class Entity {
 			glVertex2f(x, y + size);
 		} glEnd();
 	}
+	
+	public int getX(){
+		return position.x;
+	}
+	
+	public int getY(){
+		return position.y;
+	}
 }

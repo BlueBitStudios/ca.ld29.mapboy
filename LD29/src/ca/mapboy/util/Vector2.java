@@ -43,4 +43,11 @@ public class Vector2 {
 	public static float dot(Vector2 vec1, Vector2 vec2){
 		return (vec1.x * vec2.x) + (vec1.y * vec2.y);
 	}
+	
+	public static double distance(Vector2 vec1, Vector2 vec2){
+		int dx = vec2.x - vec1.x;
+		int dy = vec2.y - vec1.y;
+		
+		return Math.sqrt((dx * dx) + (dy * dy));
+	}
 }

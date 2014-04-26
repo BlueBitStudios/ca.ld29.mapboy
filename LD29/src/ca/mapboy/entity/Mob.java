@@ -18,7 +18,7 @@ public class Mob extends Entity {
 	public Mob(Vector2 position, Colour color, Texture[] textures, int size) {
 		super(position, color, size);
 		this.textures = textures;
-		this.textureIndex = 0;
+		this.textureIndex = 1;
 	}
 	
 	public boolean move(int xa, int ya){
@@ -38,13 +38,15 @@ public class Mob extends Entity {
 			textureIndex = 3;
 		}
 		
+		if(position.x + xa < 0 || position.y + ya < 0 || position.x + xa > ((World.current.getWorldWidth() - 1) * World.current.tileSize) || position.y + ya > ((World.current.getWorldHeight() - 1) * World.current.tileSize)){
+			return false;
+		}
+		
 		for(Vector2 tilePos : World.current.getSolidTiles()){
 			if(Tile.isColliding(new Vector2(position.x + xa + size/2, position.y + ya + size/2), tilePos.x, tilePos.y, size/2)){
 				return false;
 			}
 		}
-		
-		
 		
 		position.x += xa;
 		position.y += ya;
