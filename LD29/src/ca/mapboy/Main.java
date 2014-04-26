@@ -4,8 +4,10 @@ import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.GL_FALSE;
 import static org.lwjgl.opengl.GL11.GL_MODELVIEW;
 import static org.lwjgl.opengl.GL11.GL_PROJECTION;
+import static org.lwjgl.opengl.GL11.GL_STENCIL_TEST;
 import static org.lwjgl.opengl.GL11.glClear;
 import static org.lwjgl.opengl.GL11.glClearColor;
+import static org.lwjgl.opengl.GL11.glEnable;
 import static org.lwjgl.opengl.GL11.glLoadIdentity;
 import static org.lwjgl.opengl.GL11.glMatrixMode;
 import static org.lwjgl.opengl.GL11.glOrtho;
@@ -26,14 +28,19 @@ import java.io.FileReader;
 import java.io.IOException;
 
 import org.lwjgl.LWJGLException;
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
+import org.lwjgl.opengl.PixelFormat;
+import org.newdawn.slick.opengl.Texture;
+import org.newdawn.slick.opengl.TextureLoader;
+import org.newdawn.slick.util.ResourceLoader;
 
+import ca.mapboy.entity.Player;
 import ca.mapboy.tile.BaseCollidableTile;
 import ca.mapboy.tile.BaseVoidTile;
 import ca.mapboy.tile.Tile;
 import ca.mapboy.util.Colour;
-import ca.mapboy.util.LightSource;
 import ca.mapboy.util.Vector2;
 import ca.mapboy.world.World;
 
@@ -55,7 +62,7 @@ public class Main {
 		try{
 			Display.setDisplayMode(new DisplayMode(WIDTH, HEIGHT));
 			Display.setTitle(TITLE);
-			Display.create();
+			Display.create(new PixelFormat(0, 16, 1));
 		}catch(LWJGLException e){
 			e.printStackTrace();
 		}
@@ -69,18 +76,40 @@ public class Main {
 			Display.update();
 			Display.sync(60);
 		}
+		
+		cleanup();
+	}
+	
+	public void cleanup(){
+		Display.destroy();
+		System.exit(0);
 	}
 	
 	World map;
 	
 	public void init(){
-		Tile.tileIds.add(new BaseVoidTile(0, null, null));
-		Tile.tileIds.add(new BaseCollidableTile(1, new Colour(0.8, 0.8, 0.8, 1), null));
+		try {
+			Tile.tileIds.add(new BaseVoidTile(0, null, null));
+			Tile.tileIds.add(new BaseCollidableTile(1, null, TextureLoader.getTexture("PNG", Main.class.getResourceAsStream("/block.png"))));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		
-		map = new World(16, 10, 10);
+		map = new World(64, 10, 10);
 		map.loadMapFromFile("/map.txt");
 		
-		map.addLight(new LightSource(new Vector2(0, 0), 4, 8, 16));
+		try {
+			Texture[] playerTextures = {
+				TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("res/char/char4.png")),
+				TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("res/char/char3.png")),
+				TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("res/char/char2.png")),
+				TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("res/char/char1.png")),
+			};
+			
+			map.addPlayer(new Player(new Vector2(0, 0), null, playerTextures));
+		} catch (IOException e1){
+			e1.printStackTrace();
+		}
 		
 		shaderProgram = glCreateProgram();
 		fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
@@ -113,12 +142,19 @@ public class Main {
 		
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
-		glOrtho(0, WIDTH / 3, HEIGHT / 3, 0, -1, 1);
+		glOrtho(0, WIDTH, HEIGHT, 0, -1, 1);
 		glMatrixMode(GL_PROJECTION);
+		
+		glEnable(GL_STENCIL_TEST);
+		glClearColor(0, 0, 0, 0);
 	}
 	
 	public void update(){
+		if(Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)){
+			cleanup();
+		}
 		
+		map.update();
 	}
 	
 	public void render(){

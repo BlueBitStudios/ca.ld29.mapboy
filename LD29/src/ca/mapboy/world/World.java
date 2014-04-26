@@ -6,8 +6,12 @@ import static org.lwjgl.opengl.GL20.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import org.lwjgl.input.Mouse;
+import org.lwjgl.util.vector.Vector2f;
+
 import ca.mapboy.Main;
 import ca.mapboy.entity.Entity;
+import ca.mapboy.entity.Mob;
 import ca.mapboy.entity.Player;
 import ca.mapboy.tile.Tile;
 import ca.mapboy.util.LightSource;
@@ -41,7 +45,7 @@ public class World {
 	
 	private ArrayList<LightSource> lightSources = new ArrayList<LightSource>();
 	
-	private ArrayList<Entity> entities = new ArrayList<Entity>();
+	private ArrayList<Mob> mobs = new ArrayList<Mob>();
 	private ArrayList<Player> players = new ArrayList<Player>();
 	
 	public World(int tileSize, int worldWidth, int worldHeight){
@@ -52,9 +56,27 @@ public class World {
 		current = this;
 	}
 	
+	public void update(){
+		for(Mob e : mobs){
+			e.update();
+		}
+		
+		for(Player e : players){
+			e.update();
+		}
+	}
+	
 	public void renderWorld(){
 		for(LightSource source : lightSources){
 			calculateShadows(source);
+		}
+		
+		for(Player e : players){
+			if(e.light != null) calculateShadows(e.light);
+		}
+		
+		for(Mob e : mobs){
+			if(e.light != null) calculateShadows(e.light);
 		}
 		
 		for(int y = 0; y < worldHeight; y++){
@@ -65,7 +87,17 @@ public class World {
 			}
 		}
 		
+		renderEntities();
+	}
+	
+	public void renderEntities(){
+		for(Mob e : mobs){
+			e.render();	
+		}
 		
+		for(Player e : players){
+			e.render();
+		}
 	}
 	
 	public ArrayList<Vector2> getSolidTiles(){
@@ -85,32 +117,33 @@ public class World {
 	}
 	
 	public void calculateShadows(LightSource light){
+		
 		glColorMask(false, false, false, false);
 		glStencilFunc(GL_ALWAYS, 1, 1);
 		glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
-		for (Vector2 block : new Vector2[] { new Vector2(32, 32) }) {
-			Vector2[] vertices = {
-					new Vector2(block.x, block.y),
-					new Vector2(block.x + tileSize, block.y),
-					new Vector2(block.x + tileSize, block.y + tileSize),
-					new Vector2(block.x, block.y + tileSize),
+		for (Vector2 block : getSolidTiles()) {
+			Vector2f[] vertices = {
+					new Vector2f(block.x, block.y),
+					new Vector2f(block.x, block.y + tileSize),
+					new Vector2f(block.x + tileSize, block.y + tileSize),
+					new Vector2f(block.x + tileSize, block.y)
 			};
 			
 			for (int i = 0; i < vertices.length; i++) {
-				Vector2 currentVertex = vertices[i];
-				Vector2 nextVertex = vertices[(i + 1) % vertices.length];
-				Vector2 edge = Vector2.sub(nextVertex, currentVertex);
-				Vector2 normal = new Vector2(edge.y, -edge.x);
-				Vector2 lightToCurrent = Vector2.sub(currentVertex, light.location);
-				if (Vector2.dot(normal, lightToCurrent) > 0) {
-					Vector2 point1 = Vector2.add(currentVertex, (Vector2) Vector2.sub(currentVertex, light.location).scale(800));
-					Vector2 point2 = Vector2.add(nextVertex, (Vector2) Vector2.sub(nextVertex, light.location).scale(800));
+				Vector2f currentVertex = vertices[i];
+				Vector2f nextVertex = vertices[(i + 1) % vertices.length];
+				Vector2f edge = Vector2f.sub(nextVertex, currentVertex, null);
+				Vector2f normal = new Vector2f(edge.getY(), -edge.getX());
+				Vector2f lightToCurrent = Vector2f.sub(currentVertex, new Vector2f(light.location.x, light.location.y), null);
+				if (Vector2f.dot(normal, lightToCurrent) > 0) {
+					Vector2f point1 = Vector2f.add(currentVertex, (Vector2f) Vector2f.sub(currentVertex, new Vector2f(light.location.x, light.location.y), null).scale(800), null);
+					Vector2f point2 = Vector2f.add(nextVertex, (Vector2f) Vector2f.sub(nextVertex, new Vector2f(light.location.x, light.location.y), null).scale(800), null);
 					glBegin(GL_QUADS); {
-						glVertex2f(currentVertex.x, currentVertex.y);
-						glVertex2f(point1.x, point1.y);
-						glVertex2f(point2.x, point2.y);
-						glVertex2f(nextVertex.x, nextVertex.y);
+						glVertex2f(currentVertex.getX(), currentVertex.getY());
+						glVertex2f(point1.getX(), point1.getY());
+						glVertex2f(point2.getX(), point2.getY());
+						glVertex2f(nextVertex.getX(), nextVertex.getY());
 					} glEnd();
 				}
 			}
@@ -135,6 +168,7 @@ public class World {
 
 		glDisable(GL_BLEND);
 		glUseProgram(0);
+		
 		glClear(GL_STENCIL_BUFFER_BIT);
 	}
 	
@@ -149,8 +183,8 @@ public class World {
 		scanner.close();
 	}
 	
-	public void addEntity(Entity e){
-		entities.add(e);
+	public void addMob(Mob e){
+		mobs.add(e);
 	}
 	
 	public void addPlayer(Player e){

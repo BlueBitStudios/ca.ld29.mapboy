@@ -12,6 +12,7 @@ public class Colour {
 		this.alpha = alpha;
 	}
 	
+	
 	public void bind(){
 		glColor4d(red, green, blue, alpha);
 	}

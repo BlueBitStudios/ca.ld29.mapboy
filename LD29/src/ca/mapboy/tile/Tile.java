@@ -8,6 +8,7 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.opengl.Texture;
 
 import ca.mapboy.util.Colour;
+import ca.mapboy.util.Vector2;
 import ca.mapboy.world.World;
 
 public class Tile {
@@ -31,6 +32,7 @@ public class Tile {
 	}
 	
 	public void render(int x, int y){
+		
 		glEnable(GL_TEXTURE_2D);
 		
 		if(texture != null){
@@ -57,5 +59,11 @@ public class Tile {
 		} glEnd();
 		
 		glEnable(GL_TEXTURE_2D);
+	}
+	
+	public static boolean isColliding(Vector2 position, int x, int y, int padding){
+		if(position.x > (x - padding) && position.y > (y - padding) && position.x < (x + padding) + World.current.tileSize && position.y < (y + padding) + World.current.tileSize) return true;
+		
+		return false;
 	}
 }
