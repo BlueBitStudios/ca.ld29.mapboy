@@ -1,5 +1,7 @@
 package ca.mapboy.util;
 
+import static org.lwjgl.opengl.GL11.*;
+
 public class Colour {
 	public double red, green, blue, alpha;
 	
