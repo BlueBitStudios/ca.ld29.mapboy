@@ -38,9 +38,10 @@ import org.newdawn.slick.util.ResourceLoader;
 
 import ca.mapboy.entity.Player;
 import ca.mapboy.tile.BaseCollidableTile;
+import ca.mapboy.tile.BaseTile;
 import ca.mapboy.tile.BaseVoidTile;
 import ca.mapboy.tile.Tile;
-import ca.mapboy.util.Colour;
+import ca.mapboy.util.Loader;
 import ca.mapboy.util.Vector2;
 import ca.mapboy.world.World;
 
@@ -90,7 +91,9 @@ public class Main {
 	public void init(){
 		try {
 			Tile.tileIds.add(new BaseVoidTile(0, null, null));
-			Tile.tileIds.add(new BaseCollidableTile(1, null, TextureLoader.getTexture("PNG", Main.class.getResourceAsStream("/block.png"))));
+			Tile.tileIds.add(new BaseCollidableTile(1, null, Loader.getTexture(Main.class.getResource("/block.png"), 0), true));
+			Tile.tileIds.add(new BaseCollidableTile(2, null, TextureLoader.getTexture("PNG", Main.class.getResourceAsStream("/glass.png")), false));
+			Tile.tileIds.add(new BaseTile(3, null, TextureLoader.getTexture("PNG", Main.class.getResourceAsStream("/grass.png")), false));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

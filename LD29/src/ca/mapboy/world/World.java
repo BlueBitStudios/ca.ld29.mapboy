@@ -66,7 +66,7 @@ public class World {
 		}
 	}
 	
-	public void renderWorld(){
+	public void renderLights(){
 		for(LightSource source : lightSources){
 			calculateShadows(source);
 		}
@@ -78,6 +78,10 @@ public class World {
 		for(Mob e : mobs){
 			if(e.light != null) calculateShadows(e.light);
 		}
+	}
+	
+	public void renderWorld(){
+		
 		
 		for(int y = 0; y < worldHeight; y++){
 			for(int x = 0; x < worldWidth; x++){
@@ -87,7 +91,11 @@ public class World {
 			}
 		}
 		
+		
+		
+		renderLights();
 		renderEntities();
+		
 	}
 	
 	public void renderEntities(){
@@ -97,6 +105,7 @@ public class World {
 		
 		for(Player e : players){
 			e.render();
+			e.inventory.render();
 		}
 	}
 	
@@ -116,13 +125,29 @@ public class World {
 		return result;
 	}
 	
+	public ArrayList<Vector2> getOpaqueTiles(){
+		ArrayList<Vector2> result = new ArrayList<Vector2>();
+		
+		for(int y = 0; y < worldHeight; y++){
+			for(int x = 0; x < worldWidth; x++){
+				Tile tile = Tile.getTileById(mapData.get((y * worldHeight) + x));
+				
+				if(tile.isOpaque){
+					result.add(new Vector2(x * tileSize, y * tileSize));
+				}
+			}
+		}
+		
+		return result;
+	}
+	
 	public void calculateShadows(LightSource light){
 		
 		glColorMask(false, false, false, false);
 		glStencilFunc(GL_ALWAYS, 1, 1);
 		glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
-		for (Vector2 block : getSolidTiles()) {
+		for (Vector2 block : getOpaqueTiles()) {
 			Vector2f[] vertices = {
 					new Vector2f(block.x, block.y),
 					new Vector2f(block.x, block.y + tileSize),

@@ -15,16 +15,17 @@ public class Tile {
 	public static ArrayList<Tile> tileIds = new ArrayList<Tile>();
 	
 	private int id;
-	public boolean isSolid;
+	public boolean isSolid, isOpaque;
 	private Colour colour;
 	private Texture texture;
 	
-	public Tile(int id, Colour colour, Texture texture, boolean isSolid){
+	public Tile(int id, Colour colour, Texture texture, boolean isSolid, boolean isOpaque){
 		
 		this.id = id;
 		this.colour = colour;
 		this.texture = texture;
 		this.isSolid = isSolid;
+		this.isOpaque = isOpaque;
 	}
 	
 	public static Tile getTileById(int id){
@@ -32,7 +33,8 @@ public class Tile {
 	}
 	
 	public void render(int x, int y){
-		
+
+		glEnable(GL_BLEND); glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glEnable(GL_TEXTURE_2D);
 		
 		if(texture != null){

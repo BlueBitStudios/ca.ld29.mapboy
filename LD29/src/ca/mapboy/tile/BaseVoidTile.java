@@ -6,7 +6,7 @@ import ca.mapboy.util.Colour;
 
 public class BaseVoidTile extends Tile {
 	public BaseVoidTile(int id, Colour color, Texture texture){
-		super(id, color, texture, false);
+		super(id, color, texture, false, false);
 	}
 	
 	public void render(int x, int y){}
