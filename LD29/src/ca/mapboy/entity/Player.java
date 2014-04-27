@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import org.lwjgl.input.Keyboard;
 import org.newdawn.slick.opengl.Texture;
 
-import ca.mapboy.AudioHandler;
 import ca.mapboy.Main;
 import ca.mapboy.MainMenu;
 import ca.mapboy.item.Inventory;
@@ -75,8 +74,6 @@ public class Player extends Mob {
 			World.current.addPlayer(new Player(new Vector2(256 + 8, 256 + 8), null, Main.playerTextures));
 			World.current.removePlayer(this);
 			MainMenu.open = true;
-			AudioHandler.heartBeat.stop();
-			AudioHandler.hurt.stop();
 			
 			for(Mob e : World.current.mobs){
 				Enemy en = (Enemy) e;
@@ -113,10 +110,6 @@ public class Player extends Mob {
 
 		if(health < 3){
 			
-			if(!AudioHandler.heartBeat.isPlaying()){
-				AudioHandler.playLoopingMusic(AudioHandler.heartBeat);
-			}
-			
 			glColor4d(1, 0.2, 0.2, 0.5);
 			glBegin(GL_QUADS); {
 				glVertex2f(px, py);
@@ -125,14 +118,6 @@ public class Player extends Mob {
 				glVertex2f(px, py + Main.HEIGHT);
 				
 			} glEnd();
-		}
-		
-		if(health >= 3){
-			AudioHandler.heartBeat.stop();
-			
-			if(!AudioHandler.finalMusic.isPlaying()){
-				AudioHandler.playLoopingMusic(AudioHandler.finalMusic);
-			}
 		}
 		
 		

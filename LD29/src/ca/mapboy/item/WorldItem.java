@@ -1,7 +1,6 @@
 package ca.mapboy.item;
 
 import static org.lwjgl.opengl.GL11.*;
-import ca.mapboy.AudioHandler;
 import ca.mapboy.entity.Player;
 import ca.mapboy.util.Vector2;
 import ca.mapboy.world.World;
@@ -43,7 +42,6 @@ public class WorldItem {
 		Player player = World.current.getPlayers().get(0);
 		
 		if(isColliding(player.position.plus(player.size/2), player.size/2)){
-			AudioHandler.playSound(AudioHandler.pickup);
 			player.inventory.addItem(sourceItem);
 			World.current.removeItem(this);
 		}

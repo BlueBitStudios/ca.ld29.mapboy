@@ -30,7 +30,6 @@ import java.io.IOException;
 import java.util.Random;
 
 import org.lwjgl.LWJGLException;
-import org.lwjgl.input.Keyboard;
 import org.lwjgl.openal.AL;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
@@ -48,7 +47,6 @@ import ca.mapboy.tile.BaseTile;
 import ca.mapboy.tile.StoneTile;
 import ca.mapboy.tile.Tile;
 import ca.mapboy.util.Colour;
-import ca.mapboy.util.Input;
 import ca.mapboy.util.Loader;
 import ca.mapboy.util.Vector2;
 import ca.mapboy.world.World;
@@ -59,7 +57,6 @@ public class Main {
 	public static final String TITLE = "LD29";
 	
 	private MainMenu menu;
-	private AudioHandler ah;
 	
 	public static void main(String args[]) {
 		new Main();
@@ -107,9 +104,6 @@ public class Main {
 		mobTextures[1] = Loader.getTexture(ResourceLoader.getResource("res/char/sci3.png"), 0);
 		mobTextures[2] = Loader.getTexture(ResourceLoader.getResource("res/char/sci2.png"), 0);
 		mobTextures[3] = Loader.getTexture(ResourceLoader.getResource("res/char/sci1.png"), 0);
-		
-		ah = new AudioHandler();
-		ah.init();
 		
 		menu = new MainMenu();
 		
@@ -184,7 +178,6 @@ public class Main {
 		glEnable(GL_STENCIL_TEST);
 		glClearColor(0, 0, 0, 0);
 		
-		AudioHandler.playLoopingMusic(AudioHandler.finalMusic);
 	}
 	
 	int counter;
@@ -201,7 +194,6 @@ public class Main {
 			map.addMob(new Enemy(new Vector2(x * map.tileSize, y * map.tileSize), null, mobTextures));
 		}
 		
-		ah.update();
 		if(MainMenu.open){
 			menu.update();
 		}else{

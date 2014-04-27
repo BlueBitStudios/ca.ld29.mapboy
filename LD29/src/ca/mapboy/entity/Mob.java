@@ -2,11 +2,8 @@ package ca.mapboy.entity;
 
 import static org.lwjgl.opengl.GL11.*;
 
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.opengl.Texture;
 
-import ca.mapboy.AudioHandler;
 import ca.mapboy.tile.Tile;
 import ca.mapboy.util.Colour;
 import ca.mapboy.util.LightSource;
@@ -108,7 +105,6 @@ public class Mob extends Entity {
 	public void hurt(int damage, int xa, int ya){
 		health -= damage;
 		
-		AudioHandler.playSound(AudioHandler.hurt);
 		
 		color = new Colour(1, 0, 0, 1);
 		countUp = true;
