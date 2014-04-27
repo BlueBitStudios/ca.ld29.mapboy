@@ -1,6 +1,7 @@
 package ca.mapboy.entity;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import org.newdawn.slick.opengl.Texture;
 
@@ -18,6 +19,8 @@ public class Enemy extends Mob {
 	public Enemy(Vector2 position, Colour color, Texture[] textures) {
 		super(position, color, textures, 48, 10);
 	}
+	
+	Random random = new Random();
 	
 	public void moveToTarget(){
 		int px = target.getX();
@@ -57,9 +60,12 @@ public class Enemy extends Mob {
 	
 	int attackTimer;
 	
+	public void clearTarget(){
+		target = null;
+	}
+	
 	public void attemptAttack(){
 		if(target != null){
-			System.out.println(Vector2.distance(position, target.position));
 			if(Vector2.distance(position, target.position) <= 64){
 				switch(textureIndex){
 				case 0:
@@ -84,7 +90,8 @@ public class Enemy extends Mob {
 		
 		World.current.addItem(new WorldItem(position.x, position.y, Item.items.get(0)));
 	}
-	
+
+	int direction = 5;
 	public void update(){
 		super.update();
 		
@@ -97,12 +104,29 @@ public class Enemy extends Mob {
 		if(attackTimer % 150 == 0){
 			attemptAttack();
 		}
-		ArrayList<Player> nearMobs = World.current.getPlayersInRadius(this, World.current.tileSize * 5);
+		ArrayList<Player> nearMobs = World.current.getPlayersInRadius(this, World.current.tileSize * 4);
 		
 		if(nearMobs.size() > 0){
 			if(target == null) target = nearMobs.get(0);
 		}
 		
-		if(target != null) moveToTarget();
+		if(target != null) {
+			moveToTarget();
+		}else{
+			int changeDir = random.nextInt(100);
+			if(changeDir == 5){
+				direction = random.nextInt(5);
+			}
+			
+			if(direction == 1){
+				move(1, 0);
+			}else if(direction == 2){
+				move(-1, 0);
+			}else if(direction == 3){
+				move(0, 1);
+			}else if(direction == 4){
+				move(0, -1);
+			}
+		}
 	}
 }

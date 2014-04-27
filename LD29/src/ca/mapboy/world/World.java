@@ -38,7 +38,6 @@ import org.newdawn.slick.opengl.Texture;
 import ca.mapboy.Main;
 import ca.mapboy.entity.Entity;
 import ca.mapboy.entity.Mob;
-import ca.mapboy.entity.Objectives;
 import ca.mapboy.entity.Player;
 import ca.mapboy.item.Item;
 import ca.mapboy.item.WorldItem;
@@ -85,7 +84,7 @@ public class World {
 	
 	private ArrayList<WorldItem> items = new ArrayList<WorldItem>();
 	
-	private ArrayList<Mob> mobs = new ArrayList<Mob>();
+	public ArrayList<Mob> mobs = new ArrayList<Mob>();
 	private ArrayList<Player> players = new ArrayList<Player>();
 	
 	public World(int tileSize, int worldWidth, int worldHeight){
@@ -108,11 +107,11 @@ public class World {
 	
 	public void updateMobs(){
 		for(int i = 0; i < items.size(); i++){
-			items.get(0).update();
+			items.get(i).update();
 		}
 		
 		for(int i = 0; i < mobs.size(); i++){
-			mobs.get(0).update();
+			mobs.get(i).update();
 		}
 		
 		for(Player e : players){
@@ -156,7 +155,6 @@ public class World {
 		renderLights();
 		renderSides();
 
-		Objectives.objectiveHandler.render();
 		renderEntities();
 		
 	}
@@ -223,7 +221,7 @@ public class World {
 	
 	public void renderEntities(){
 		for(int i = 0; i < items.size(); i++){
-			items.get(0).render();
+			items.get(i).render();
 		}
 		
 		for(Mob e : mobs){
@@ -342,6 +340,10 @@ public class World {
 	
 	public void removeMob(Mob e){
 		mobs.remove  (e);
+	}
+	
+	public void removePlayer(Player e){
+		players.remove(e);
 	}
 	
 	public void addItem(WorldItem e){

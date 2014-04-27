@@ -9,6 +9,7 @@ import org.newdawn.slick.opengl.Texture;
 
 import ca.mapboy.AudioHandler;
 import ca.mapboy.Main;
+import ca.mapboy.MainMenu;
 import ca.mapboy.item.Inventory;
 import ca.mapboy.item.Item;
 import ca.mapboy.util.Colour;
@@ -66,8 +67,22 @@ public class Player extends Mob {
 		}
 	}
 	
+	
 	public void update(){
 		super.update();
+		
+		if(health <= 0){
+			World.current.addPlayer(new Player(new Vector2(256 + 8, 256 + 8), null, Main.playerTextures));
+			World.current.removePlayer(this);
+			MainMenu.open = true;
+			AudioHandler.heartBeat.stop();
+			AudioHandler.hurt.stop();
+			
+			for(Mob e : World.current.mobs){
+				Enemy en = (Enemy) e;
+				en.clearTarget();
+			}
+		}
 		
 		if(Input.checkForPress(Keyboard.KEY_SPACE)){
 			attack();
@@ -99,7 +114,7 @@ public class Player extends Mob {
 		if(health < 3){
 			
 			if(!AudioHandler.heartBeat.isPlaying()){
-				AudioHandler.playSound(AudioHandler.heartBeat);
+				AudioHandler.playLoopingMusic(AudioHandler.heartBeat);
 			}
 			
 			glColor4d(1, 0.2, 0.2, 0.5);
@@ -112,6 +127,14 @@ public class Player extends Mob {
 			} glEnd();
 		}
 		
+		if(health >= 3){
+			AudioHandler.heartBeat.stop();
+			
+			if(!AudioHandler.finalMusic.isPlaying()){
+				AudioHandler.playLoopingMusic(AudioHandler.finalMusic);
+			}
+		}
+		
 		
 		for(int i = 0; i < maxHealth; i++){
 			if(health <= i){
@@ -120,11 +143,8 @@ public class Player extends Mob {
 				glColor4d(1, 1, 1, 1);
 			}
 			
-			renderHeart(Main.WIDTH - 48 + px, i * 48 + 16 + py);
+			renderHeart(Main.WIDTH - 48 + px, i * 48 + 8 + py);
 		}
-		
-		
-		
 	}
 	
 	Texture heart;

@@ -27,8 +27,10 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Random;
 
 import org.lwjgl.LWJGLException;
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.openal.AL;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
@@ -38,7 +40,6 @@ import org.newdawn.slick.opengl.TextureLoader;
 import org.newdawn.slick.util.ResourceLoader;
 
 import ca.mapboy.entity.Enemy;
-import ca.mapboy.entity.Objectives;
 import ca.mapboy.entity.Player;
 import ca.mapboy.item.Item;
 import ca.mapboy.item.ItemType;
@@ -54,9 +55,10 @@ import ca.mapboy.world.World;
 
 public class Main {
 	public static final int WIDTH = 720;
-	public static final int HEIGHT = 720;
+	public static final int HEIGHT = 480;
 	public static final String TITLE = "LD29";
 	
+	private MainMenu menu;
 	private AudioHandler ah;
 	
 	public static void main(String args[]) {
@@ -98,11 +100,19 @@ public class Main {
 	
 	World map;
 	
+	public static Texture[] playerTextures = new Texture[4];
+	
 	public void init(){
+		mobTextures[0] = Loader.getTexture(ResourceLoader.getResource("res/char/sci4.png"), 0);
+		mobTextures[1] = Loader.getTexture(ResourceLoader.getResource("res/char/sci3.png"), 0);
+		mobTextures[2] = Loader.getTexture(ResourceLoader.getResource("res/char/sci2.png"), 0);
+		mobTextures[3] = Loader.getTexture(ResourceLoader.getResource("res/char/sci1.png"), 0);
+		
 		ah = new AudioHandler();
 		ah.init();
 		
-		new Objectives();
+		menu = new MainMenu();
+		
 		
 		try {
 			Tile.tileIds.add(new BaseTile(0, null, Loader.getTexture(Main.class.getResource("/stone.png"), 0), false));
@@ -117,25 +127,18 @@ public class Main {
 			e.printStackTrace();
 		}
 		
-		map = new World(64, 20, 20);
+		map = new World(64, 40, 40);
 		map.loadMapFromFile("/map.txt");
 		
 		new Item(ItemType.HealthUp, Loader.getTexture(Main.class.getResource("/heartup.png"), 0), 2);
 		
 		try {
-			Texture[] playerTextures = {
-				TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("res/char/char4.png")),
-				TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("res/char/char3.png")),
-				TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("res/char/char2.png")),
-				TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("res/char/char1.png")),
-			};
+			playerTextures[0] = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("res/char/char4.png"));
+			playerTextures[1] = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("res/char/char3.png"));
+			playerTextures[2] = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("res/char/char2.png"));
+			playerTextures[3] = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("res/char/char1.png"));
 			
-			Texture[] mobTextures = {
-					TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("res/char/sci4.png")),
-					TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("res/char/sci3.png")),
-					TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("res/char/sci2.png")),
-					TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("res/char/sci1.png")),
-				};
+			
 			
 			map.addPlayer(new Player(new Vector2(256 + 8, 256 + 8), new Colour(1, 1, 1, 1), playerTextures));
 			map.addMob(new Enemy(new Vector2(5 * 64, 15 * 64), new Colour(1, 1, 1, 1), mobTextures));
@@ -180,15 +183,32 @@ public class Main {
 		
 		glEnable(GL_STENCIL_TEST);
 		glClearColor(0, 0, 0, 0);
+		
+		AudioHandler.playLoopingMusic(AudioHandler.finalMusic);
 	}
 	
+	int counter;
+	Random random = new Random();
+	
+	Texture[] mobTextures = new Texture[4];
 	public void update(){
 		
-		ah.update();
-		map.update();
-		Objectives.objectiveHandler.updateObjectivesAndMessages();
+		counter++;
+		if(counter % (60) == 0){
+			int x = random.nextInt(18) + 11;
+			int y = random.nextInt(40);
+			
+			map.addMob(new Enemy(new Vector2(x * map.tileSize, y * map.tileSize), null, mobTextures));
+		}
 		
-		followPlayer();
+		ah.update();
+		if(MainMenu.open){
+			menu.update();
+		}else{
+			map.update();
+		
+			followPlayer();
+		}
 	}
 	
 	private float camX, camY;
@@ -196,10 +216,22 @@ public class Main {
 	
 	public void render(){
 		glClear(GL_COLOR_BUFFER_BIT);
-		glClearColor(0.5f, 0.5f, 0.5f, 1);
 		
-		map.renderWorld();
+		if(!MainMenu.open){
+			glClearColor(0.5f, 0.5f, 0.5f, 1);
+			map.renderWorld();
+		}else{
+			glClearColor(0, 0, 0, 1);
+			menu.render();
+			
+			glLoadIdentity();
+			
+			glTranslatef(0, 0, 0);
+		}
 
+	}
+	
+	public void followPlayer(){
 		glLoadIdentity();
 		
 		px = (-map.getPlayers().get(0).getX() - 24) + WIDTH/2;
@@ -208,10 +240,6 @@ public class Main {
 		camX = (px / (WIDTH) * 2);
 		camY = (py / (HEIGHT) * 2);
 		glTranslatef(camX, camY, 0f);
-	}
-	
-	public void followPlayer(){
-		
 	}
 }
 
