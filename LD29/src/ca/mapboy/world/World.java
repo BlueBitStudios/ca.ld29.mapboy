@@ -404,6 +404,12 @@ public class World {
 		return Tile.getTileById(mapData.get((y * worldWidth) + x));
 	}
 	
+	public int getTileID(int x, int y){
+		if(x < 0 || y < 0 || x >= worldWidth || y >= worldHeight) return -1;
+		
+		return mapData.get((y * worldWidth) + x);
+	}
+	
 	private boolean vecInList(ArrayList<Node> list, Vector2 vector){
 		for(Node n : list) {
 			if(n.tile.x == vector.x && n.tile.y == vector.y) return true;

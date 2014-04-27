@@ -14,10 +14,10 @@ import ca.mapboy.world.World;
 public class Tile {
 	public static ArrayList<Tile> tileIds = new ArrayList<Tile>();
 	
-	private int id;
+	protected int id;
 	public boolean isSolid, isOpaque;
-	private Colour colour;
-	private Texture texture;
+	protected Colour colour;
+	protected Texture texture;
 	
 	public Tile(int id, Colour colour, Texture texture, boolean isSolid, boolean isOpaque){
 		

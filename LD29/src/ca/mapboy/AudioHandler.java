@@ -19,6 +19,7 @@ public class AudioHandler {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
 	}
 	
 	public void update(){

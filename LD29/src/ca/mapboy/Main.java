@@ -23,6 +23,7 @@ import ca.mapboy.entity.Player;
 import ca.mapboy.tile.BaseCollidableTile;
 import ca.mapboy.tile.BaseTile;
 import ca.mapboy.tile.BaseVoidTile;
+import ca.mapboy.tile.StoneTile;
 import ca.mapboy.tile.Tile;
 import ca.mapboy.util.Colour;
 import ca.mapboy.util.Loader;
@@ -83,12 +84,16 @@ public class Main {
 			Tile.tileIds.add(new BaseTile(0, null, Loader.getTexture(Main.class.getResource("/stone.png"), 0), false));
 			Tile.tileIds.add(new BaseCollidableTile(1, null, Loader.getTexture(Main.class.getResource("/block.png"), 0), true));
 			Tile.tileIds.add(new BaseCollidableTile(2, null, TextureLoader.getTexture("PNG", Main.class.getResourceAsStream("/glass.png")), false));
-			Tile.tileIds.add(new BaseTile(3, null, TextureLoader.getTexture("PNG", Main.class.getResourceAsStream("/grass.png")), false));
+			Tile.tileIds.add(new BaseCollidableTile(3, null, Loader.getTexture(Main.class.getResource("/glass.png"), 1), false));
+			Tile.tileIds.add(new StoneTile(4, null, Loader.getTexture(Main.class.getResource("/stonewall.png"), 0), true, true));
+			Tile.tileIds.add(new StoneTile(5, null, Loader.getTexture(Main.class.getResource("/stonelength.png"), 0), true, true));
+			Tile.tileIds.add(new StoneTile(6, null, Loader.getTexture(Main.class.getResource("/stonelength.png"), 1), true, true));
+			Tile.tileIds.add(new BaseTile(7, null, Loader.getTexture(Main.class.getResource("/dirt.png"), 0), false));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
-		map = new World(64, 10, 10);
+		map = new World(64, 20, 20);
 		map.loadMapFromFile("/map.txt");
 		
 		try {
@@ -99,7 +104,8 @@ public class Main {
 				TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("res/char/char1.png")),
 			};
 			
-			map.addPlayer(new Player(new Vector2(0, 0), new Colour(1, 1, 1, 1), playerTextures));
+			map.addPlayer(new Player(new Vector2(256 + 8, 256 + 8), new Colour(1, 1, 1, 1), playerTextures));
+			map.addMob(new Enemy(new Vector2(5 * 64, 15 * 64), new Colour(1, 0.2, 0.2, 1), playerTextures));
 		} catch (IOException e1){
 			e1.printStackTrace();
 		}
@@ -165,8 +171,8 @@ public class Main {
 
 		glLoadIdentity();
 		
-		px = -map.getPlayers().get(0).getX() + WIDTH/2;
-		py = map.getPlayers().get(0).getY() - HEIGHT/2;
+		px = (-map.getPlayers().get(0).getX() - 24) + WIDTH/2;
+		py = (map.getPlayers().get(0).getY() + 24) - HEIGHT/2;
 		
 		camX = (px / (WIDTH) * 2);
 		camY = (py / (HEIGHT) * 2);
