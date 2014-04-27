@@ -35,8 +35,6 @@ public class Inventory {
 		this.height = height;
 		this.inventorySlot = inventorySlot;
 		this.buttonTexture = buttonTexture;
-		
-		for(int i = 0; i < 20; i++) inventory.add(Item.items.get(0));
 	}
 
 	float xOff;
@@ -70,7 +68,7 @@ public class Inventory {
 				
 				if(mx > xx * 48 + 16 && my > yy * 48 + 16 && mx < xx * 48 + 48 && my < yy * 48 + 48){
 					if(Input.checkForClick(0)){
-						if(inventory.size() > 0){
+						if(inventory.size() > (yy * width) + xx){
 							Item item = inventory.get((yy * width) + xx);
 							if(item != null){
 								item.action();

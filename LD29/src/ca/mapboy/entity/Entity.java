@@ -6,9 +6,9 @@ import ca.mapboy.util.Colour;
 import ca.mapboy.util.Vector2;
 
 public class Entity {
-	protected Vector2 position;
+	public Vector2 position;
 	protected Colour color;
-	protected int size;
+	public int size;
 	
 	public Entity(Vector2 position, Colour color, int size){
 		this.position = position;

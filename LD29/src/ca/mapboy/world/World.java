@@ -1,20 +1,47 @@
 package ca.mapboy.world;
 
-import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL20.*;
+import static org.lwjgl.opengl.GL11.GL_ALWAYS;
+import static org.lwjgl.opengl.GL11.GL_BLEND;
+import static org.lwjgl.opengl.GL11.GL_EQUAL;
+import static org.lwjgl.opengl.GL11.GL_KEEP;
+import static org.lwjgl.opengl.GL11.GL_ONE;
+import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
+import static org.lwjgl.opengl.GL11.GL_QUADS;
+import static org.lwjgl.opengl.GL11.GL_REPLACE;
+import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
+import static org.lwjgl.opengl.GL11.GL_STENCIL_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
+import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
+import static org.lwjgl.opengl.GL11.glBegin;
+import static org.lwjgl.opengl.GL11.glBlendFunc;
+import static org.lwjgl.opengl.GL11.glClear;
+import static org.lwjgl.opengl.GL11.glColorMask;
+import static org.lwjgl.opengl.GL11.glDisable;
+import static org.lwjgl.opengl.GL11.glEnable;
+import static org.lwjgl.opengl.GL11.glEnd;
+import static org.lwjgl.opengl.GL11.glStencilFunc;
+import static org.lwjgl.opengl.GL11.glStencilOp;
+import static org.lwjgl.opengl.GL11.glTexCoord2f;
+import static org.lwjgl.opengl.GL11.glVertex2f;
+import static org.lwjgl.opengl.GL20.glGetUniformLocation;
+import static org.lwjgl.opengl.GL20.glUniform2f;
+import static org.lwjgl.opengl.GL20.glUniform3f;
+import static org.lwjgl.opengl.GL20.glUseProgram;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Scanner;
 
-import org.lwjgl.input.Keyboard;
 import org.newdawn.slick.opengl.Texture;
 
 import ca.mapboy.Main;
 import ca.mapboy.entity.Entity;
 import ca.mapboy.entity.Mob;
+import ca.mapboy.entity.Objectives;
 import ca.mapboy.entity.Player;
+import ca.mapboy.item.Item;
+import ca.mapboy.item.WorldItem;
 import ca.mapboy.tile.Tile;
 import ca.mapboy.util.LightSource;
 import ca.mapboy.util.Loader;
@@ -56,6 +83,8 @@ public class World {
 	
 	private ArrayList<LightSource> lightSources = new ArrayList<LightSource>();
 	
+	private ArrayList<WorldItem> items = new ArrayList<WorldItem>();
+	
 	private ArrayList<Mob> mobs = new ArrayList<Mob>();
 	private ArrayList<Player> players = new ArrayList<Player>();
 	
@@ -78,8 +107,12 @@ public class World {
 	}
 	
 	public void updateMobs(){
-		for(Mob e : mobs){
-			e.update();
+		for(int i = 0; i < items.size(); i++){
+			items.get(0).update();
+		}
+		
+		for(int i = 0; i < mobs.size(); i++){
+			mobs.get(0).update();
 		}
 		
 		for(Player e : players){
@@ -122,6 +155,8 @@ public class World {
 		
 		renderLights();
 		renderSides();
+
+		Objectives.objectiveHandler.render();
 		renderEntities();
 		
 	}
@@ -187,6 +222,10 @@ public class World {
 	}
 	
 	public void renderEntities(){
+		for(int i = 0; i < items.size(); i++){
+			items.get(0).render();
+		}
+		
 		for(Mob e : mobs){
 			e.render();	
 		}
@@ -194,6 +233,7 @@ public class World {
 		for(Player e : players){
 			e.render();
 			renderInventory();
+			e.renderHealth();
 		}
 	}
 	
@@ -298,6 +338,18 @@ public class World {
 	
 	public void addMob(Mob e){
 		mobs.add(e);
+	}
+	
+	public void removeMob(Mob e){
+		mobs.remove  (e);
+	}
+	
+	public void addItem(WorldItem e){
+		items.add(e);
+	}
+	
+	public void removeItem(WorldItem e){
+		items.remove(e);
 	}
 	
 	public void addPlayer(Player e){

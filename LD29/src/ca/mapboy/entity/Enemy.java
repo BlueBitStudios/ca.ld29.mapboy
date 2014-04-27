@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import org.newdawn.slick.opengl.Texture;
 
+import ca.mapboy.item.Item;
+import ca.mapboy.item.WorldItem;
 import ca.mapboy.util.Colour;
 import ca.mapboy.util.Vector2;
 import ca.mapboy.world.Node;
@@ -11,7 +13,7 @@ import ca.mapboy.world.World;
 
 public class Enemy extends Mob {
 	private ArrayList<Node> path = null;
-	private Entity target;
+	private Mob target;
 	
 	public Enemy(Vector2 position, Colour color, Texture[] textures) {
 		super(position, color, textures, 48, 10);
@@ -53,14 +55,54 @@ public class Enemy extends Mob {
 		}
 	}
 	
+	int attackTimer;
+	
+	public void attemptAttack(){
+		if(target != null){
+			System.out.println(Vector2.distance(position, target.position));
+			if(Vector2.distance(position, target.position) <= 64){
+				switch(textureIndex){
+				case 0:
+					target.hurt(1, 0, -30);
+					break;
+				case 1:
+					target.hurt(1, 0, 30);
+					break;
+				case 2:
+					target.hurt(1, 30, 0);
+					break;
+				case 3:
+					target.hurt(1, -30, 0);
+					break;
+				}
+			}
+		}
+	}
+	
+	public void die(){
+		World.current.removeMob(this);
+		
+		World.current.addItem(new WorldItem(position.x, position.y, Item.items.get(0)));
+	}
+	
 	public void update(){
-		ArrayList<Player> nearMobs = World.current.getPlayersInRadius(this, World.current.tileSize * 4);
+		super.update();
+		
+		if(health <= 0){
+			die();
+		}
+		
+		attackTimer++;
+		
+		if(attackTimer % 150 == 0){
+			attemptAttack();
+		}
+		ArrayList<Player> nearMobs = World.current.getPlayersInRadius(this, World.current.tileSize * 5);
 		
 		if(nearMobs.size() > 0){
 			if(target == null) target = nearMobs.get(0);
-			moveToTarget();
-		}else{
-			target = null;
 		}
+		
+		if(target != null) moveToTarget();
 	}
 }

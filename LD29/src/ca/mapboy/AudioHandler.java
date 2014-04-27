@@ -10,14 +10,18 @@ public class AudioHandler {
 	public static Audio mainMenuMusic;
 	public static Audio battleMusic;
 	public static Audio finalMusic;
-	public static Audio stepSound;
+	public static Audio heartBeat;
+	public static Audio pickup;
+	public static Audio hurt;
 	
 	public void init(){
 		try {
 			mainMenuMusic = AudioLoader.getAudio("WAV", Audio.class.getResourceAsStream("/audio/mainmenu.wav"));
 			battleMusic = AudioLoader.getAudio("WAV", Audio.class.getResourceAsStream("/audio/battle.wav"));
 			finalMusic = AudioLoader.getAudio("WAV", Audio.class.getResourceAsStream("/audio/final.wav"));
-			stepSound = AudioLoader.getAudio("WAV", Audio.class.getResourceAsStream("/audio/step.wav"));
+			heartBeat = AudioLoader.getAudio("WAV", Audio.class.getResourceAsStream("/audio/heartbeat.wav"));
+			pickup = AudioLoader.getAudio("WAV", Audio.class.getResourceAsStream("/audio/pickup.wav"));
+			hurt = AudioLoader.getAudio("WAV", Audio.class.getResourceAsStream("/audio/hurt.wav"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

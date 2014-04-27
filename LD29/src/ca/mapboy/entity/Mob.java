@@ -6,6 +6,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.opengl.Texture;
 
+import ca.mapboy.AudioHandler;
 import ca.mapboy.tile.Tile;
 import ca.mapboy.util.Colour;
 import ca.mapboy.util.LightSource;
@@ -17,15 +18,34 @@ public class Mob extends Entity {
 	protected int textureIndex;
 	public LightSource light;
 	public int health, maxHealth;
+	protected Colour baseColor;
 	
 	public Mob(Vector2 position, Colour color, Texture[] textures, int size, int maxHealth) {
 		super(position, color, size);
 		this.textures = textures;
 		this.textureIndex = 1;
 		this.maxHealth = maxHealth;
+		this.health = maxHealth;
+		this.baseColor = color;
 	}
 	
+	public void update(){
+		if(countUp){
+			counter++;
+		}
+		
+		if(counter > 5){
+			color = baseColor;
+			countUp = false;
+			counter = 0;
+		}
+	}
+	
+	private int counter;
+	private boolean countUp = false;
 	public boolean move(int xa, int ya){
+		
+		
 		if(ya < 0){
 			textureIndex = 0;
 		}
@@ -85,9 +105,14 @@ public class Mob extends Entity {
 		} glEnd();
 	}
 	
-	public void hurt(int damage){
+	public void hurt(int damage, int xa, int ya){
 		health -= damage;
 		
+		AudioHandler.playSound(AudioHandler.hurt);
+		
+		color = new Colour(1, 0, 0, 1);
+		countUp = true;
+		move(xa, ya);
 	}
 	
 	public void addHealth(int health) {

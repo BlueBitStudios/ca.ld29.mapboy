@@ -38,6 +38,7 @@ import org.newdawn.slick.opengl.TextureLoader;
 import org.newdawn.slick.util.ResourceLoader;
 
 import ca.mapboy.entity.Enemy;
+import ca.mapboy.entity.Objectives;
 import ca.mapboy.entity.Player;
 import ca.mapboy.item.Item;
 import ca.mapboy.item.ItemType;
@@ -57,7 +58,6 @@ public class Main {
 	public static final String TITLE = "LD29";
 	
 	private AudioHandler ah;
-	private Input ih;
 	
 	public static void main(String args[]) {
 		new Main();
@@ -102,7 +102,7 @@ public class Main {
 		ah = new AudioHandler();
 		ah.init();
 		
-		ih = new Input();
+		new Objectives();
 		
 		try {
 			Tile.tileIds.add(new BaseTile(0, null, Loader.getTexture(Main.class.getResource("/stone.png"), 0), false));
@@ -130,8 +130,15 @@ public class Main {
 				TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("res/char/char1.png")),
 			};
 			
+			Texture[] mobTextures = {
+					TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("res/char/sci4.png")),
+					TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("res/char/sci3.png")),
+					TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("res/char/sci2.png")),
+					TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("res/char/sci1.png")),
+				};
+			
 			map.addPlayer(new Player(new Vector2(256 + 8, 256 + 8), new Colour(1, 1, 1, 1), playerTextures));
-			map.addMob(new Enemy(new Vector2(5 * 64, 15 * 64), new Colour(1, 0.2, 0.2, 1), playerTextures));
+			map.addMob(new Enemy(new Vector2(5 * 64, 15 * 64), new Colour(1, 1, 1, 1), mobTextures));
 		} catch (IOException e1){
 			e1.printStackTrace();
 		}
@@ -179,6 +186,7 @@ public class Main {
 		
 		ah.update();
 		map.update();
+		Objectives.objectiveHandler.updateObjectivesAndMessages();
 		
 		followPlayer();
 	}
