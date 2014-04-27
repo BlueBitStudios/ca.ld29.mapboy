@@ -14,7 +14,7 @@ public class Enemy extends Mob {
 	private Entity target;
 	
 	public Enemy(Vector2 position, Colour color, Texture[] textures) {
-		super(position, color, textures, 48);
+		super(position, color, textures, 48, 10);
 	}
 	
 	public void moveToTarget(){

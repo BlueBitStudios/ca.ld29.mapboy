@@ -1,7 +1,27 @@
 package ca.mapboy;
 
-import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL20.*;
+import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.GL_FALSE;
+import static org.lwjgl.opengl.GL11.GL_MODELVIEW;
+import static org.lwjgl.opengl.GL11.GL_PROJECTION;
+import static org.lwjgl.opengl.GL11.GL_STENCIL_TEST;
+import static org.lwjgl.opengl.GL11.glClear;
+import static org.lwjgl.opengl.GL11.glClearColor;
+import static org.lwjgl.opengl.GL11.glEnable;
+import static org.lwjgl.opengl.GL11.glLoadIdentity;
+import static org.lwjgl.opengl.GL11.glMatrixMode;
+import static org.lwjgl.opengl.GL11.glOrtho;
+import static org.lwjgl.opengl.GL11.glTranslatef;
+import static org.lwjgl.opengl.GL20.GL_COMPILE_STATUS;
+import static org.lwjgl.opengl.GL20.GL_FRAGMENT_SHADER;
+import static org.lwjgl.opengl.GL20.glAttachShader;
+import static org.lwjgl.opengl.GL20.glCompileShader;
+import static org.lwjgl.opengl.GL20.glCreateProgram;
+import static org.lwjgl.opengl.GL20.glCreateShader;
+import static org.lwjgl.opengl.GL20.glGetShaderi;
+import static org.lwjgl.opengl.GL20.glLinkProgram;
+import static org.lwjgl.opengl.GL20.glShaderSource;
+import static org.lwjgl.opengl.GL20.glValidateProgram;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -9,7 +29,6 @@ import java.io.FileReader;
 import java.io.IOException;
 
 import org.lwjgl.LWJGLException;
-import org.lwjgl.input.Keyboard;
 import org.lwjgl.openal.AL;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
@@ -20,12 +39,14 @@ import org.newdawn.slick.util.ResourceLoader;
 
 import ca.mapboy.entity.Enemy;
 import ca.mapboy.entity.Player;
+import ca.mapboy.item.Item;
+import ca.mapboy.item.ItemType;
 import ca.mapboy.tile.BaseCollidableTile;
 import ca.mapboy.tile.BaseTile;
-import ca.mapboy.tile.BaseVoidTile;
 import ca.mapboy.tile.StoneTile;
 import ca.mapboy.tile.Tile;
 import ca.mapboy.util.Colour;
+import ca.mapboy.util.Input;
 import ca.mapboy.util.Loader;
 import ca.mapboy.util.Vector2;
 import ca.mapboy.world.World;
@@ -36,6 +57,7 @@ public class Main {
 	public static final String TITLE = "LD29";
 	
 	private AudioHandler ah;
+	private Input ih;
 	
 	public static void main(String args[]) {
 		new Main();
@@ -80,6 +102,8 @@ public class Main {
 		ah = new AudioHandler();
 		ah.init();
 		
+		ih = new Input();
+		
 		try {
 			Tile.tileIds.add(new BaseTile(0, null, Loader.getTexture(Main.class.getResource("/stone.png"), 0), false));
 			Tile.tileIds.add(new BaseCollidableTile(1, null, Loader.getTexture(Main.class.getResource("/block.png"), 0), true));
@@ -95,6 +119,8 @@ public class Main {
 		
 		map = new World(64, 20, 20);
 		map.loadMapFromFile("/map.txt");
+		
+		new Item(ItemType.HealthUp, Loader.getTexture(Main.class.getResource("/heartup.png"), 0), 2);
 		
 		try {
 			Texture[] playerTextures = {
@@ -150,9 +176,6 @@ public class Main {
 	}
 	
 	public void update(){
-		if(Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)){
-			cleanup();
-		}
 		
 		ah.update();
 		map.update();

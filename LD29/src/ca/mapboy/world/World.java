@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Scanner;
 
+import org.lwjgl.input.Keyboard;
 import org.newdawn.slick.opengl.Texture;
 
 import ca.mapboy.Main;
@@ -66,7 +67,17 @@ public class World {
 		current = this;
 	}
 	
+	public static boolean inInventory = false;
+	
 	public void update(){
+		inInventory = players.get(0).inventory.isOpen;
+		
+		if(!inInventory){
+			updateMobs();
+		}
+	}
+	
+	public void updateMobs(){
 		for(Mob e : mobs){
 			e.update();
 		}
@@ -90,6 +101,14 @@ public class World {
 		}
 	}
 	
+	public void renderInventory(){
+		if(inInventory){
+			players.get(0).inventory.render();
+		}else{
+			players.get(0).inventory.renderButton();
+		}
+	}
+	
 	public void renderWorld(){
 		
 		
@@ -100,8 +119,6 @@ public class World {
 				tile.render(x * tileSize, y * tileSize);
 			}
 		}
-		
-		
 		
 		renderLights();
 		renderSides();
@@ -176,6 +193,7 @@ public class World {
 		
 		for(Player e : players){
 			e.render();
+			renderInventory();
 		}
 	}
 	

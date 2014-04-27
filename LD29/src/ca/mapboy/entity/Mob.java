@@ -1,6 +1,8 @@
 package ca.mapboy.entity;
 
 import static org.lwjgl.opengl.GL11.*;
+
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.opengl.Texture;
 
@@ -14,11 +16,13 @@ public class Mob extends Entity {
 	protected Texture[] textures;
 	protected int textureIndex;
 	public LightSource light;
+	public int health, maxHealth;
 	
-	public Mob(Vector2 position, Colour color, Texture[] textures, int size) {
+	public Mob(Vector2 position, Colour color, Texture[] textures, int size, int maxHealth) {
 		super(position, color, size);
 		this.textures = textures;
 		this.textureIndex = 1;
+		this.maxHealth = maxHealth;
 	}
 	
 	public boolean move(int xa, int ya){
@@ -79,6 +83,16 @@ public class Mob extends Entity {
 			glTexCoord2f(0, 1);
 			glVertex2f(x, y + size);
 		} glEnd();
+	}
+	
+	public void hurt(int damage){
+		health -= damage;
+		
+	}
+	
+	public void addHealth(int health) {
+		if(health + this.health > this.maxHealth) this.health = this.maxHealth;
+		else this.health += health;
 	}
 
 }
