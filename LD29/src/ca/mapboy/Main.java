@@ -100,22 +100,22 @@ public class Main {
 	public static Texture[] playerTextures = new Texture[4];
 	
 	public void init(){
-		mobTextures[0] = Loader.getTexture(ResourceLoader.getResource("res/char/sci4.png"), 0);
-		mobTextures[1] = Loader.getTexture(ResourceLoader.getResource("res/char/sci3.png"), 0);
-		mobTextures[2] = Loader.getTexture(ResourceLoader.getResource("res/char/sci2.png"), 0);
-		mobTextures[3] = Loader.getTexture(ResourceLoader.getResource("res/char/sci1.png"), 0);
+		mobTextures[0] = Loader.getTexture(ResourceLoader.getResource("res/char/Sci4.png"), 0);
+		mobTextures[1] = Loader.getTexture(ResourceLoader.getResource("res/char/Sci3.png"), 0);
+		mobTextures[2] = Loader.getTexture(ResourceLoader.getResource("res/char/Sci2.png"), 0);
+		mobTextures[3] = Loader.getTexture(ResourceLoader.getResource("res/char/Sci1.png"), 0);
 		
 		menu = new MainMenu();
 		
 		
 		try {
-			Tile.tileIds.add(new BaseTile(0, null, Loader.getTexture(Main.class.getResource("/stone.png"), 0), false));
-			Tile.tileIds.add(new BaseCollidableTile(1, null, Loader.getTexture(Main.class.getResource("/block.png"), 0), true));
+			Tile.tileIds.add(new BaseTile(0, null, Loader.getTexture(Main.class.getResource("/Stone.png"), 0), false));
+			Tile.tileIds.add(new BaseCollidableTile(1, null, Loader.getTexture(Main.class.getResource("/Block.png"), 0), true));
 			Tile.tileIds.add(new BaseCollidableTile(2, null, TextureLoader.getTexture("PNG", Main.class.getResourceAsStream("/glass.png")), false));
 			Tile.tileIds.add(new BaseCollidableTile(3, null, Loader.getTexture(Main.class.getResource("/glass.png"), 1), false));
-			Tile.tileIds.add(new StoneTile(4, null, Loader.getTexture(Main.class.getResource("/stonewall.png"), 0), true, true));
-			Tile.tileIds.add(new StoneTile(5, null, Loader.getTexture(Main.class.getResource("/stonelength.png"), 0), true, true));
-			Tile.tileIds.add(new StoneTile(6, null, Loader.getTexture(Main.class.getResource("/stonelength.png"), 1), true, true));
+			Tile.tileIds.add(new StoneTile(4, null, Loader.getTexture(Main.class.getResource("/StoneWall.png"), 0), true, true));
+			Tile.tileIds.add(new StoneTile(5, null, Loader.getTexture(Main.class.getResource("/StoneLength.png"), 0), true, true));
+			Tile.tileIds.add(new StoneTile(6, null, Loader.getTexture(Main.class.getResource("/StoneLength.png"), 1), true, true));
 			Tile.tileIds.add(new BaseTile(7, null, Loader.getTexture(Main.class.getResource("/dirt.png"), 0), false));
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -127,10 +127,10 @@ public class Main {
 		new Item(ItemType.HealthUp, Loader.getTexture(Main.class.getResource("/heartup.png"), 0), 2);
 		
 		try {
-			playerTextures[0] = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("res/char/char4.png"));
-			playerTextures[1] = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("res/char/char3.png"));
-			playerTextures[2] = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("res/char/char2.png"));
-			playerTextures[3] = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("res/char/char1.png"));
+			playerTextures[0] = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("res/char/Char4.png"));
+			playerTextures[1] = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("res/char/Char3.png"));
+			playerTextures[2] = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("res/char/Char2.png"));
+			playerTextures[3] = TextureLoader.getTexture("PNG", ResourceLoader.getResourceAsStream("res/char/Char1.png"));
 			
 			
 			
